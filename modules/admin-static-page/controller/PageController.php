@@ -9,9 +9,9 @@ namespace AdminStaticPage\Controller;
 
 use LibFormatter\Library\Formatter;
 use LibForm\Library\Form;
+use LibForm\Library\Combiner;
 use LibPagination\Library\Paginator;
 use StaticPage\Model\StaticPage as SPage;
-use AdminSiteMeta\Library\Meta;
 
 class PageController extends \Admin\Controller
 {
@@ -39,7 +39,6 @@ class PageController extends \Admin\Controller
             $spage = SPage::getOne(['id'=>$id]);
             if(!$spage)
                 return $this->show404();
-            Meta::parse($spage, 'meta');
             $params = $this->getParams('Edit Static Page');
         }else{
             $params = $this->getParams('Create New Static Page');
@@ -47,18 +46,18 @@ class PageController extends \Admin\Controller
 
         $form              = new Form('admin.static-page.edit');
         $params['form']    = $form;
-        $params['schemas'] = [
-            'WebPage'     => 'WebPage',
-            'AboutPage'   => 'AboutPage',
-            'ContactPage' => 'ContactPage',
-            'ProfilePage' => 'ProfilePage',
-            'QAPage'      => 'QAPage'
+
+        $c_opts = [
+            'meta' => [null, null, 'json']
         ];
+
+        $combiner = new Combiner($id, $c_opts, 'static-page');
+        $spage = $combiner->prepare($spage);
 
         if(!($valid = $form->validate($spage)) || !$form->csrfTest('noob'))
             return $this->resp('static-page/edit', $params);
 
-        Meta::combine($valid, 'meta');
+        $valid = $combiner->finalize($valid);
 
         if($id){
             if(!SPage::set((array)$valid, ['id'=>$id]))

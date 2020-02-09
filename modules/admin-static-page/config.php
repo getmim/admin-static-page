@@ -2,7 +2,7 @@
 
 return [
     '__name' => 'admin-static-page',
-    '__version' => '0.0.1',
+    '__version' => '0.0.2',
     '__git' => 'git@github.com:getmim/admin-static-page.git',
     '__license' => 'MIT',
     '__author' => [
@@ -30,6 +30,9 @@ return [
             ],
             [
                 'static-page' => NULL
+            ],
+            [
+                'admin-site-meta' => NULL 
             ]
         ],
         'optional' => []
@@ -127,6 +130,15 @@ return [
                     'label' => 'About',
                     'type' => 'summernote',
                     'rules' => []
+                ],
+                'meta-schema' => [
+                    'options' => [
+                        'WebPage'     => 'WebPage',
+                        'AboutPage'   => 'AboutPage',
+                        'ContactPage' => 'ContactPage',
+                        'ProfilePage' => 'ProfilePage',
+                        'QAPage'      => 'QAPage'
+                    ]
                 ]
             ]
         ]
